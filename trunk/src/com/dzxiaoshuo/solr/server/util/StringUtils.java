@@ -17,6 +17,7 @@ public class StringUtils {
 	
 	/**
 	 * 过滤查询字符串中的非法字符
+	 * 建议：当提交查询字符串的时候，应先过滤查询的字符串中是否已经包含非法字符
 	 * 
 	 * @param str
 	 * @return String
