@@ -20,7 +20,7 @@ public class EntityConvertTest extends TestCase {
 	public void testEntity2SolrInputDocument() {
 		People p = new People();
 		p.setId(1);
-		p.setName("1987");
+		// p.setName("1987");
 		p.setAge(22);
 		EntityConvert.entity2SolrInputDocument(p);
 	}
