@@ -45,9 +45,9 @@ public class Client {
 	 * @param start 查询起始记录
 	 * @param rows 查询条数
 	 * @param server
-	 * @return PaginationSupport<Object>
+	 * @return PaginationSupport<T>
 	 */
-	public PaginationSupport<Object> query(String keyword, Class<?> cls, int start, int rows, SolrServer server) {
+	public <T>PaginationSupport<T> query(String keyword, Class<T> cls, int start, int rows, SolrServer server) {
 		SolrQuery query = new SolrQuery();
 		query.setQuery(keyword);
 		query.setStart(start);
@@ -61,7 +61,7 @@ public class Client {
 		}
 		SolrDocumentList sdl = response.getResults();
 		int totalCount = Long.valueOf(response.getResults().getNumFound()).intValue();
-		return new PaginationSupport<Object>(EntityConvert.solrDocument2Entity(sdl, cls), totalCount, start, rows);
+		return new PaginationSupport<T>(EntityConvert.solrDocument2Entity(sdl, cls), totalCount, start, rows);
 	}
 	
 	/**
@@ -72,9 +72,9 @@ public class Client {
 	 * @param start 查询起始记录
 	 * @param rows 查询条数
 	 * @param server
-	 * @return PaginationSupport<Object>
+	 * @return PaginationSupport<T>
 	 */
-	public PaginationSupport<Object> query(SolrParams params, Class<?> cls, int start, int rows, SolrServer server) {
+	public <T>PaginationSupport<T> query(SolrParams params, Class<T> cls, int start, int rows, SolrServer server) {
 		QueryResponse response = null;
 		try {
 			response = server.query(params);
@@ -84,7 +84,7 @@ public class Client {
 		}
 		SolrDocumentList sdl = response.getResults();
 		int totalCount = Long.valueOf(response.getResults().getNumFound()).intValue();
-		return new PaginationSupport<Object>(EntityConvert.solrDocument2Entity(sdl, cls), totalCount, start, rows);
+		return new PaginationSupport<T>(EntityConvert.solrDocument2Entity(sdl, cls), totalCount, start, rows);
 	}
 	
 	/**
