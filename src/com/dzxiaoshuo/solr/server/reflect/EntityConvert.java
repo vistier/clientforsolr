@@ -64,9 +64,9 @@ public class EntityConvert {
 	 * SolrDocument与实体类转换
 	 * @param sd
 	 * @param cls
-	 * @return Object
+	 * @return <T>
 	 */
-	public static Object solrDocument2Entity(SolrDocument sd, Class<?> cls) {
+	public static <T> T solrDocument2Entity(SolrDocument sd, Class<T> cls) {
 		if (sd != null) {
 			try {
 				Object obj = cls.newInstance();
@@ -94,7 +94,7 @@ public class EntityConvert {
 					}
 					m.invoke(obj, fieldType.cast(sd.getFieldValue(fieldName)));
 				}
-				return obj;
+				return cls.cast(obj);
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
@@ -140,15 +140,15 @@ public class EntityConvert {
 	 * 
 	 * @param solrDocumentList
 	 * @param cls
-	 * @return List<Object>
+	 * @return List<T>
 	 */
-	public static List<Object> solrDocument2Entity(SolrDocumentList solrDocumentList, Class<?> cls) {
+	public static <T>List<T> solrDocument2Entity(SolrDocumentList solrDocumentList, Class<T> cls) {
 		if (solrDocumentList != null && solrDocumentList.size() > 0) {
-			List<Object> objectList = new ArrayList<Object>();
+			List<T> objectList = new ArrayList<T>();
 			for (SolrDocument sd : solrDocumentList) {
 				Object obj = solrDocument2Entity(sd, cls);
 				if (obj != null) {
-					objectList.add(obj);
+					objectList.add(cls.cast(obj));
 				}
 			}
 			return objectList;
