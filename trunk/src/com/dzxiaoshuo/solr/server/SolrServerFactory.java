@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.slf4j.Logger;
@@ -32,12 +31,6 @@ public class SolrServerFactory {
 	 * 存储其他的CoreContainer, 也就是说当应用中会有其他的SOLR_HOME
 	 */
 	private static Map<String, EmbeddedSolrServerContainer> esscMap = new HashMap<String, EmbeddedSolrServerContainer>();
-	/**
-	 * 默认的CoreContainer
-	 */
-	private static final EmbeddedSolrServerContainer embeddedSolrServerContainer = new EmbeddedSolrServerContainer();
-	
-	private static boolean tag = true;
 	
 	private SolrServerFactory() {
 	}
@@ -49,32 +42,8 @@ public class SolrServerFactory {
 	 * @return SolrServer
 	 */
 	public static SolrServer getEmbeddedSolrServer(String solrName) {
-		// 当第一次获取EmbeddedSolrServer的时候，将所有核心服务全部加载起来
-		if (tag) {
-			for (SolrServer ss : solrServerMap.values()) {
-				if (ss instanceof EmbeddedSolrServer) {
-					tag = false;
-					break;
-				}
-			}
-		}
-		if (tag) {
-			CoreContainer cc = embeddedSolrServerContainer.getContainer();
-			Collection<String> solrCoreNameCollection = cc.getCoreNames();
-			for (String scn : solrCoreNameCollection) {
-				solrServerMap.put(scn, embeddedSolrServerContainer.getSolrServer(scn));
-			}
-			logger.info("所有核心EmbeddedSolrServer全部加在完毕！");
-		}
-		SolrServer solrServer = null;
-		if (!solrServerMap.containsKey(solrName)) {
-			solrServer = embeddedSolrServerContainer.getSolrServer(solrName);
-			if (solrServer != null) {
-				solrServerMap.put(solrName, solrServer);
-				logger.info("服务 " + solrName + " 加载完毕");
-			}
-		}
-		return solrServerMap.get(solrName);
+		// 获取配置文件中配置的solrServerHome的核心server
+		return getEmbeddedSolrServer(EmbeddedSolrServerContainer.DEFAULT_SOLR_SERVER_HOME, solrName);
 	}
 	
 	
@@ -88,10 +57,17 @@ public class SolrServerFactory {
 	 * @return SolrServer
 	 */
 	public static SolrServer getEmbeddedSolrServer(String solrServerHome, String solrName) {
+		// 当第一次获取SOLR_HOME的EmbeddedSolrServer的时候，将所有核心服务全部加载起来
 		if (!esscMap.containsKey(solrServerHome)) {
 			EmbeddedSolrServerContainer essc = new EmbeddedSolrServerContainer(solrServerHome);
 			if (essc != null) {
 				esscMap.put(solrServerHome, essc);
+				CoreContainer cc = essc.getContainer();
+				Collection<String> solrCoreNameCollection = cc.getCoreNames();
+				for (String scn : solrCoreNameCollection) {
+					solrServerMap.put(scn, essc.getSolrServer(scn));
+				}
+				logger.info(solrServerHome + "的所有核心EmbeddedSolrServer全部加在完毕！");
 			}
 		}
 		SolrServer solrServer = null;
