@@ -28,9 +28,9 @@ public class EntityConvertTest extends TestCase {
 	public void testSolrDocument2Entity() {
 		SolrDocument sd = new SolrDocument();
 		sd.addField("id", 1);
-		sd.addField("name", "1987");
+		sd.addField("name", null);
 		sd.addField("age", 22);
-		EntityConvert.solrDocument2Entity(sd, People.class);
+		assertNotNull(EntityConvert.solrDocument2Entity(sd, People.class));
 	}
 	
 }
