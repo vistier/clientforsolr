@@ -35,7 +35,7 @@ import com.dzxiaoshuo.solr.server.util.PaginationSupport;
 
 public class Client {
 
-	private Logger logger = LoggerFactory.getLogger(Client.class);
+	private static Logger logger = LoggerFactory.getLogger(Client.class);
 	
 	/**
 	 * 利用solr的CommonParams.Q查询
@@ -47,7 +47,7 @@ public class Client {
 	 * @param server
 	 * @return PaginationSupport<T>
 	 */
-	public <T>PaginationSupport<T> query(String keyword, Class<T> cls, int start, int rows, SolrServer server) {
+	public static <T>PaginationSupport<T> query(String keyword, Class<T> cls, int start, int rows, SolrServer server) {
 		SolrQuery query = new SolrQuery();
 		query.setQuery(keyword);
 		query.setStart(start);
@@ -74,7 +74,7 @@ public class Client {
 	 * @param server
 	 * @return PaginationSupport<T>
 	 */
-	public <T>PaginationSupport<T> query(SolrParams params, Class<T> cls, int start, int rows, SolrServer server) {
+	public static <T>PaginationSupport<T> query(SolrParams params, Class<T> cls, int start, int rows, SolrServer server) {
 		QueryResponse response = null;
 		try {
 			response = server.query(params);
@@ -92,7 +92,7 @@ public class Client {
 	 * @param obj
 	 * @param server
 	 */
-	public void commit(Object obj, SolrServer server) {
+	public static void commit(Object obj, SolrServer server) {
 		try {
 			server.add(EntityConvert.entity2SolrInputDocument(obj));
 			server.commit(false, false);
@@ -109,7 +109,7 @@ public class Client {
 	 * @param objectList
 	 * @param server
 	 */
-	public void commit(List<Object> objectList, SolrServer server) {
+	public static void commit(List<Object> objectList, SolrServer server) {
 		try {
 			server.add(EntityConvert.entity2SolrInputDocument(objectList));
 			server.commit(false, false);
@@ -130,7 +130,7 @@ public class Client {
 	 * @param idName
 	 * @param server
 	 */
-	public void update(Map<Object, Object> objMap, String idName, SolrServer server) {
+	public static void update(Map<Object, Object> objMap, String idName, SolrServer server) {
 		if (objMap != null && objMap.size() > 0 && StringUtils.isNotBlank(idName)) {
 			SolrQuery query = new SolrQuery();
 			Set<Object> objSet = objMap.keySet();
@@ -174,7 +174,7 @@ public class Client {
 	 * @param idName
 	 * @param server
 	 */
-	public void update(Object obj, String idName, SolrServer server) {
+	public static void update(Object obj, String idName, SolrServer server) {
 		if (obj != null && StringUtils.isNotBlank(idName)) {
 			Class<?> cls = obj.getClass();
 			try {
@@ -220,7 +220,7 @@ public class Client {
 	 * @param idName
 	 * @param server
 	 */
-	public void deleteByExample(Object obj, String idName, SolrServer server) {
+	public static void deleteByExample(Object obj, String idName, SolrServer server) {
 		Class<?> cls = obj.getClass();
 		try {
 			Method method = cls.getMethod(EntityConvert.getMethodName(idName, "get"));
@@ -247,7 +247,7 @@ public class Client {
 	 * @param idName Id名称
 	 * @param server
 	 */
-	public void deleteById(Object id, String idName, SolrServer server) {
+	public static void deleteById(Object id, String idName, SolrServer server) {
 		try {
 			server.deleteById(idName + ":" + id.toString());
 			server.commit(false, false);
@@ -268,7 +268,7 @@ public class Client {
 	 * @param idName   Id名称
 	 * @param server
 	 */
-	public void deleteById(Object[] idArrays, String idName, SolrServer server) {
+	public static void deleteById(Object[] idArrays, String idName, SolrServer server) {
 		if (idArrays.length > 0) {
 			try {
 				StringBuffer query = new StringBuffer(idName + ":" + idArrays[0]);
@@ -293,7 +293,7 @@ public class Client {
 	 * 
 	 * @param server
 	 */
-	public void deleteAll(SolrServer server) {
+	public static void deleteAll(SolrServer server) {
 		try {
 			server.deleteById("*:*");
 			server.commit(false, false);
@@ -310,7 +310,7 @@ public class Client {
 	 * 
 	 * @param server
 	 */
-	public void optimize(SolrServer server) {
+	public static void optimize(SolrServer server) {
 		try {
 			logger.info("正在优化 SOLR SYSTEM ... ...");
 			long now = System.currentTimeMillis();
