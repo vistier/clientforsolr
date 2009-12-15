@@ -92,7 +92,7 @@ public class Client {
 	 * @param obj
 	 * @param server
 	 */
-	public static void commit(Object obj, SolrServer server) {
+	public static void commitObject(Object obj, SolrServer server) {
 		try {
 			server.add(EntityConvert.entity2SolrInputDocument(obj));
 			server.commit(false, false);
@@ -109,9 +109,9 @@ public class Client {
 	 * @param objectList
 	 * @param server
 	 */
-	public static void commit(List<Object> objectList, SolrServer server) {
+	public static <T> void commitList(List<T> objectList, SolrServer server) {
 		try {
-			server.add(EntityConvert.entity2SolrInputDocument(objectList));
+			server.add(EntityConvert.entityList2SolrInputDocument(objectList));
 			server.commit(false, false);
 			logger.info("成功提交 " + objectList.size() + " 个元素到SOLR SYSTEM中");
 		} catch (SolrServerException e) {
@@ -295,7 +295,7 @@ public class Client {
 	 */
 	public static void deleteAll(SolrServer server) {
 		try {
-			server.deleteById("*:*");
+			server.deleteByQuery("*:*");
 			server.commit(false, false);
 			logger.info("从SOLR SYSTEM中删除所有元素");
 		} catch (SolrServerException e) {
@@ -303,6 +303,24 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 与SOLR SYSTEM PING, 主要是检测solr是否down掉
+	 * 
+	 * @param server
+	 * @return String
+	 */
+	public static String ping(SolrServer server) {
+		try {
+			logger.info("与SOLR SYSTEM PING成功");
+			return server.ping().getResponse().toString();
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
