@@ -120,13 +120,14 @@ public class EntityConvert {
 	 * @param entityList
 	 * @return Collection<SolrInputDocument>
 	 */
-	public static Collection<SolrInputDocument> entity2SolrInputDocument(List<Object> entityList) {
+	public static <T> Collection<SolrInputDocument> entityList2SolrInputDocument(List<T> entityList) {
 		if (entityList != null && entityList.size() > 0) {
 			Collection<SolrInputDocument> solrInputDocumentList = new ArrayList<SolrInputDocument>();
+			SolrInputDocument sid = null;
 			for (Object o : entityList) {
-				SolrInputDocument sid = entity2SolrInputDocument(o);
+				sid = entity2SolrInputDocument(o);
 				if (sid != null) {
-					solrInputDocumentList.add(entity2SolrInputDocument(o));
+					solrInputDocumentList.add(sid);
 				}
 			}
 			return solrInputDocumentList;
