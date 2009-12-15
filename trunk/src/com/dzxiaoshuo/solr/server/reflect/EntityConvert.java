@@ -95,9 +95,13 @@ public class EntityConvert {
 					m.invoke(obj, fieldType.cast(sd.getFieldValue(fieldName)));
 				}
 				return cls.cast(obj);
+			} catch (ClassCastException e) {
+				logger.error("请检查schema.xml中的各个field的数据类型与PO类的是否一致！");
+				e.printStackTrace();
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
+				logger.error("请检查PO类中的field对应的各个setter和getter是否存在！");
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
@@ -108,6 +112,7 @@ public class EntityConvert {
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
+				logger.error("请检查schema中的field是否不存在于PO类中！");
 				e.printStackTrace();
 			}
 		}
@@ -219,8 +224,10 @@ public class EntityConvert {
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} catch (NoSuchMethodException e) {
+					logger.error("请检查PO类中的field对应的各个setter和getter是否存在！");
 					e.printStackTrace();
 				} catch (NoSuchFieldException e) {
+					logger.error("请检查schema中的field是否不存在于PO类中！");
 					e.printStackTrace();
 				}
 			}
@@ -307,8 +314,10 @@ public class EntityConvert {
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
 					} catch (NoSuchMethodException e) {
+						logger.error("请检查PO类中的field对应的各个setter和getter是否存在！");
 						e.printStackTrace();
 					} catch (NoSuchFieldException e) {
+						logger.error("请检查schema中的field是否不存在于PO类中！");
 						e.printStackTrace();
 					}
 				}
